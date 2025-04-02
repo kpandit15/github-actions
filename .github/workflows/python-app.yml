@@ -37,4 +37,4 @@ jobs:
         echo "Hello World"
     - name: Printing from the script
       run: |
-        python main.pygit 
+        python main.py
