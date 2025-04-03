@@ -3,7 +3,7 @@ import yfinance as yf
 from loguru import logger
 
 
-def main():
+def main() -> None:
     result_dict = {}
     result = pd.DataFrame()
 
