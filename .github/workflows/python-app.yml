@@ -6,35 +6,52 @@ name: Python application
 on:
   push:
     branches:
-      - main  # Replace with your branch if different
+      - main # Replace with your branch if different
   schedule:
-      - cron: "0 18 * * 1-5"  # Runs at 18:00 UTC (6:00 PM) Monday to Friday
+    - cron: "0 18 * * 1-5" # Runs at 18:00 UTC (6:00 PM) Monday to Friday
 
 jobs:
-  build:
-
+  lint:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.11"
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: install Linter
+        run: |
+          pip install ruff
 
-    - name: Run Script
-      run: |
-        python main.py
-      
-    - name: Upload Generated Data
-      uses: actions/upload-artifact@v4
-      with:
-          name: nifty_50_data
+      - name: Lint Code Base
+        run: ruff check .
+
+  etl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Script
+        run: |
+          python main.py
+
+      - name: Upload Generated Data
+        uses: actions/upload-artifact@v4
+        with:
+          name: nifty_50_data_(date +'%Y-%m-%d')
           path: nifty_50_data.csv
           retention-days: 10
